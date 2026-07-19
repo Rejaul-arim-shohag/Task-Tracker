@@ -111,4 +111,15 @@ def update_task(user_id: int, task_id: int, payload: TaskUpdateRequest) -> Dict:
     return get_task_by_id(user_id, task_id)
 
 
+def delete_task(user_id: int, task_id: int) -> Dict[str, str]:
+    _ensure_tasks_table()
 
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM tasks WHERE id = %s AND user_id = %s", (task_id, user_id)
+        )
+        if cursor.rowcount == 0:
+            raise ValueError("Task not found")
+    connection.commit()
+
+    return {"message": "Task deleted successfully"}
