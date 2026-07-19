@@ -24,7 +24,7 @@ def test_signup_and_login_flow():
 
     login_response = client.post(
         "/auth/login",
-        json={"username": "jane", "password": "secret123"},
+        json={"email": "jane@example.com", "password": "secret123"},
     )
     assert login_response.status_code == 200
     assert login_response.json()["access_token"]
