@@ -2,7 +2,12 @@ from typing import Dict
 
 from app.database.db import connection
 from app.schemas.auth import LoginRequest, SignupRequest
-from app.utils.security import create_access_token, hash_password, verify_password
+from app.utils.security import (
+    create_access_token,
+    decode_access_token,
+    hash_password,
+    verify_password,
+)
 
 
 def _ensure_users_table() -> None:
@@ -56,3 +61,24 @@ def login_user(payload: LoginRequest) -> Dict[str, str]:
 
     token = create_access_token({"sub": user["email"]})
     return {"access_token": token, "token_type": "bearer"}
+
+
+def get_user_info_from_token(token: str) -> Dict[str, str | int]:
+    _ensure_users_table()
+    payload = decode_access_token(token)
+    email = payload.get("sub")
+
+    if not email:
+        raise ValueError("Invalid token payload")
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT id, name, email FROM users WHERE LOWER(email) = %s",
+            (email.lower(),),
+        )
+        user = cursor.fetchone()
+
+    if not user:
+        raise ValueError("User not found")
+
+    return user
