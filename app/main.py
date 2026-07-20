@@ -10,7 +10,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://task-tracker-frontend-qw9j.onrender.com/",
+        "https://task-tracker-frontend-qw9j.onrender.com",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:5173",
