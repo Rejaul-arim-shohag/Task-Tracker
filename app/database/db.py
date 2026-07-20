@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+connection = None
+
 try:
     connection = pymysql.connect(
         host=os.getenv("DB_HOST"),
